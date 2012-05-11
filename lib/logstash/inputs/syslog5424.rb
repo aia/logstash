@@ -195,6 +195,21 @@ class LogStash::Inputs::Syslog5424 < LogStash::Inputs::Base
   # treat it like the whole event.message is correct and try to fill
   # the missing pieces (host, priority, etc)
   public
+  def process_structured(event)
+    event.fields["structured"].first.split("][").each_with_index do |sd_element, index|
+      event.fields["sd_#{index}"] = {}
+      # Splitting by space will do for now
+      sd_params = sd_element.split(" ")
+      event.fields["sd_#{index}"]["sd_name"] = sd_params[0]
+      sd_params[1..-1].each do |sd_param|
+        key, value = sd_param.split("=")
+        event.fields["sd_#{index}"][key] = value.gsub(/\"/, '')
+      end
+    end
+    
+    event.fields.delete("structured")
+  end
+  
   def syslog_relay(event, url)
     @grok_filter.filter(event)
 
@@ -208,15 +223,7 @@ class LogStash::Inputs::Syslog5424 < LogStash::Inputs::Base
       event.fields["severity"] = severity
       event.fields["facility"] = facility
       
-      event.fields["structured"].first.split("][").each_with_index do |sd_element, index|
-        event.fields["sd_#{index}"] = {}
-        sd_params = sd_element.split(" ")
-        event.fields["sd_#{index}"]["sd_name"] = sd_params[0]
-        sd_params[1..-1].each do |sd_param|
-          key, value = sd_param.split("=")
-          event.fields["sd_#{index}"][key] = value.gsub(/\"/, '')
-        end
-      end
+      process_structured(event)
       
       event.fields.delete("structured")
 
