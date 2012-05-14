@@ -223,7 +223,7 @@ class LogStash::Inputs::Syslog5424 < LogStash::Inputs::Base
       event.fields["severity"] = severity
       event.fields["facility"] = facility
       
-      process_structured(event)
+      process_structured(event) if event.fields["structured"]
       
       event.fields.delete("structured")
 
