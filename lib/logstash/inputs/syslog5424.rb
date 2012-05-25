@@ -197,13 +197,12 @@ class LogStash::Inputs::Syslog5424 < LogStash::Inputs::Base
   public
   def process_structured(event)
     event.fields["structured"].first.split("][").each_with_index do |sd_element, index|
-      event.fields["sd_#{index}"] = {}
       # Splitting by space will do for now
       sd_params = sd_element.split(" ")
-      event.fields["sd_#{index}"]["sd_name"] = sd_params[0]
+      sd_name = sd_params[0].split("@").first
       sd_params[1..-1].each do |sd_param|
         key, value = sd_param.split("=")
-        event.fields["sd_#{index}"][key] = value.gsub(/\"/, '')
+        event.fields["sd_#{sd_name}_#{key}"] = value.gsub(/\"/, '')
       end
     end
     
