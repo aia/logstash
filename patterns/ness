@@ -1,0 +1,7 @@
+
+
+NESSSYSLOG1 %{TIMESTAMP_ISO8601:customdate}\s+%{WORD:loglevel}\s+%{HOSTNAME:hostname}\s+<%{GREEDYDATA:track}>\s+%{DATE}\s+%{TIME}\s+%{PROG:thread}\s+graylog2\s+Completed\s+%{WORD:method}\s+%{URI:url}\s+with\s+%{NUMBER:status}\s+in\s+%{NUMBER:time}ms
+
+NESSSYSLOG2 %{WORD:loglevel}\s+%{HOSTNAME:hostname}\s+<%{GREEDYDATA:track}>\s+%{DATE}T%{TIME}Z\s+%{GREEDYDATA:message}
+
+NESSSYSLOG3 %{WORD:loglevel}\s+%{HOSTNAME:hostname}\s+%{GREEDYDATA:message}
