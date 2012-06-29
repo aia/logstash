@@ -174,6 +174,7 @@ build/logstash-$(VERSION)-monolithic.jar: JAR_ARGS+=patterns
 build/logstash-$(VERSION)-monolithic.jar:
 	$(QUIET)jar cfe $@ logstash.runner $(JAR_ARGS)
 	$(QUIET)jar i $@
+	$(QUIET)jar uf $@ -C misc/config log4j.properties
 
 update-jar: copy-ruby-files
 	$(QUIET)jar uf build/logstash-$(VERSION)-monolithic.jar -C build/ruby .
