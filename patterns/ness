@@ -5,3 +5,5 @@ NESSSYSLOG1 %{TIMESTAMP_ISO8601:customdate}\s+%{WORD:loglevel}\s+%{HOSTNAME:host
 NESSSYSLOG2 %{WORD:loglevel}\s+%{HOSTNAME:hostname}\s+<%{GREEDYDATA:track}>\s+%{DATE}T%{TIME}Z\s+%{GREEDYDATA:message}
 
 NESSSYSLOG3 %{WORD:loglevel}\s+%{HOSTNAME:hostname}\s+%{GREEDYDATA:message}
+
+NESSSYSTEM %{WORD:msg_facility}\s+%{WORD:msg_level}\s+%{WORD:msg_program}\s+%{WORD:msg_pid}\s+%{GREEDYDATA:message}
