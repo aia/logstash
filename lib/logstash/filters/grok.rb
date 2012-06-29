@@ -200,8 +200,8 @@ class LogStash::Filters::Grok < LogStash::Filters::Base
           end
 
           if @named_captures_only && !is_named
-            @logger.debug("Skipping capture since it is not a named " \
-                          "capture and named_captures_only is true.", :field => key)
+            #@logger.debug("Skipping capture since it is not a named " \
+            #              "capture and named_captures_only is true.", :field => key)
             next
           end
 
