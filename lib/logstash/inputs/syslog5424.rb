@@ -195,18 +195,41 @@ class LogStash::Inputs::Syslog5424 < LogStash::Inputs::Base
   # treat it like the whole event.message is correct and try to fill
   # the missing pieces (host, priority, etc)
   public
-  def process_structured(event)
+  def process_structured_old(event)
     event.fields["structured"].first.split("][").each_with_index do |sd_element, index|
       # Splitting by space will do for now
       sd_params = sd_element.split(" ")
       sd_name = sd_params[0].split("@").first
       sd_params[1..-1].each do |sd_param|
         key, value = sd_param.split("=")
+        key ||= "nokey"
+        value ||= "novalue"
         event.fields["sd_#{sd_name}_#{key}"] = value.gsub(/\"/, '')
       end
     end
     
     event.fields.delete("structured")
+  end
+  
+  def process_structured(event)
+    wip = event.fields["tail"].first
+    
+    while ((wip != "") && (matched = /^\[(.+?)\](.*)/.match(wip))) do
+      wip = matched[2]
+      
+      sd_params = matched[1].split(" ")
+      sd_name = sd_params[0].split("@").first
+      sd_params[1..-1].each do |sd_param|
+        key, value = sd_param.split("=")
+        key ||= "nokey"
+        value ||= "novalue"
+        event.fields["sd_#{sd_name}_#{key}"] = value.gsub(/\"/, '')
+      end
+    end
+    
+    (wip == "") ? event.fields["message"] = "nomsg" : event.fields["message"] = wip
+    
+    event.fields.delete("tail")
   end
   
   def syslog_relay(event, url)
@@ -222,9 +245,11 @@ class LogStash::Inputs::Syslog5424 < LogStash::Inputs::Base
       event.fields["severity"] = severity
       event.fields["facility"] = facility
       
-      process_structured(event) if event.fields["structured"]
+      #process_structured(event) if event.fields["structured"]
+      process_structured(event) if event.fields["tail"]
       
-      event.fields.delete("structured")
+      #event.fields.delete("structured")
+      event.fields.delete("tail")
 
       @date_filter.filter(event)
     else
