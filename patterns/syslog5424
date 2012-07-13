@@ -1,4 +1,4 @@
 UUID [A-Fa-f0-9]{8}-(?:[A-Fa-f0-9]{4}-){3}[A-Fa-f0-9]{12}
-PRINTASCII [\x20-\x7E]+
+PRINTASCII [\x21-\x7E]+
 
 SYSLOG5424 %{NUMBER:version} %{TIMESTAMP_ISO8601:timestamp} %{HOSTNAME:hostname} %{PRINTASCII:appname} %{PRINTASCII:procid} %{PRINTASCII:msgid} \[%{GREEDYDATA:structured}\]( %{GREEDYDATA:message})?
