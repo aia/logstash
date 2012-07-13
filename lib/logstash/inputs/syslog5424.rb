@@ -212,23 +212,22 @@ class LogStash::Inputs::Syslog5424 < LogStash::Inputs::Base
   end
   
   def process_structured(event)
-    wip = event.fields["tail"].first
-    
-    while ((wip != "") && (matched = /^\[(.+?)\](.*)/.match(wip))) do
-      wip = matched[2]
-      
-      sd_params = matched[1].split(" ")
-      sd_name = sd_params[0].split("@").first
-      sd_params[1..-1].each do |sd_param|
-        key, value = sd_param.split("=")
-        key ||= "nokey"
-        value ||= "novalue"
-        event.fields["sd_#{sd_name}_#{key}"] = value.gsub(/\"/, '')
+    line = event.fields["tail"].first
+
+    properties, message = line.split("] ", 2)
+    properties.slice!(0)
+
+    properties.split("][").each do |group|
+      items = group.split
+      name = items.slice!(0).split("@", 2).first
+
+      items.each do |kv|
+        key, value = kv.split('="', 2)
+        event.fields["sd_#{name}_#{key || "nokey"}"] = value.chomp! || "novalue"
       end
     end
-    
-    (wip == "") ? event.fields["message"] = "nomsg" : event.fields["message"] = wip
-    
+
+    event.fields["message"] = message || "nomsg"
     event.fields.delete("tail")
   end
   
