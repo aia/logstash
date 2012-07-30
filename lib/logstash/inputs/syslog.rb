@@ -34,11 +34,13 @@ class LogStash::Inputs::Syslog < LogStash::Inputs::Base
 
   # Labels for facility levels
   # This comes from RFC3164.
-  config :facility_labels, :validate => :array, :default => [ "kernel", "user-level", "mail", "system", "security/authorization", "syslogd", "line printer", "network news", "UUCP", "clock", "security/authorization", "FTP", "NTP", "log audit", "log alert", "clock", "local0", "local1", "local2", "local3", "local4", "local5", "local6", "local7" ]
+  #config :facility_labels, :validate => :array, :default => [ "kernel", "user-level", "mail", "system", "security/authorization", "syslogd", "line printer", "network news", "UUCP", "clock", "security/authorization", "FTP", "NTP", "log audit", "log alert", "clock", "local0", "local1", "local2", "local3", "local4", "local5", "local6", "local7" ]
+  config :facility_labels, :validate => :array, :default => [ "kernel", "user-level", "mail", "system", "security", "syslogd", "printer", "news", "uucp", "clock", "security", "ftp", "ntp", "log-audit", "log-alert", "clock", "local0", "local1", "local2", "local3", "local4", "local5", "local6", "local7" ]
 
   # Labels for severity levels
   # This comes from RFC3164.
-  config :severity_labels, :validate => :array, :default => [ "Emergency" , "Alert", "Critical", "Error", "Warning", "Notice", "Informational", "Debug" ]
+  #config :severity_labels, :validate => :array, :default => [ "Emergency" , "Alert", "Critical", "Error", "Warning", "Notice", "Informational", "Debug" ]
+  config :severity_labels, :validate => :array, :default => [ "emergency" , "alert", "critical", "error", "warning", "notice", "info", "debug" ]
 
   public
   def initialize(params)
