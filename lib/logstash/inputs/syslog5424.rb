@@ -230,6 +230,10 @@ class LogStash::Inputs::Syslog5424 < LogStash::Inputs::Base
     end
 
     event.fields["message"] = message || "nomsg"
+    
+    event.fields["appname"] = (event.fields["sd_l_sc"] || event.fields["sd_s_sc"] || "/noservice").split("/").last
+    event.fields["slot"] = (event.fields["sd_l_si"] || event.fields["sd_s_si"] || "/noslot").split("/").last
+    
     event.fields.delete("tail")
   end
   
