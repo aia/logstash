@@ -223,7 +223,9 @@ class LogStash::Inputs::Syslog5424 < LogStash::Inputs::Base
 
       items.each do |kv|
         key, value = kv.split('="', 2)
-        event.fields["sd_#{name}_#{key || "nokey"}"] = value.chomp! || "novalue"
+        value.chomp!('"')
+
+        event.fields["sd_#{name}_#{key || "nokey"}"] = value || "novalue"
       end
     end
 
